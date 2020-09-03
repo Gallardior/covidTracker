@@ -9,12 +9,10 @@ const mapa = new window.google.maps.Map($map, {
     styles: styles,
   })
 
-
 // GET DATA
-const Global = 'https://covid19.mathdro.id/api/'
-// const PorPais = 'https://api.covid19api.com/country/south-africa/status/confirmed?from=2020-01-01T00:00:00Z&to=2020-08-01T00:00:00Z'
-const PorPais = 'https://covid19.mathdro.id/api/confirmed'
+const Summary = 'https://covid19.mathdro.id/api/'
 const TodosLosPaises = "https://wuhan-coronavirus-api.laeyoung.endpoint.ainize.ai/jhu-edu/latest"
+// const PorPais = 'https://covid19.mathdro.id/api/countries/USA'
 
 const getData = async api => {
   const response = await fetch(api)
@@ -38,15 +36,16 @@ const drawPines = async () => {
         },
         map: mapa,
         title: pais.countryregion,
-        icon: './pin.png'
+        // icon: {url: './pin.png', scaledSize: new google.maps.Size(25, 25)}
+        // shadow: pinShadow
       })
       let content = `
       <h3><strong>${pais.countryregion}</strong></h3>
       <p>Casos: ${pais.confirmed}</p>
       <p>Recuperados: ${pais.recovered}</p>
       <p>Muertes: ${pais.deaths}</p>
-      <a href="grafica.html" class="btn">Ver Grafica</a>
       `
+      // <a href="grafica.html" class="btn">Ver Grafica</a>
 
       marker.addListener("click", () => {
         popUp.setContent(content)
@@ -54,20 +53,20 @@ const drawPines = async () => {
       })
     }
   });
-  console.log(paises)
 }
 
 
 // Draw DATA
 const drawData = async () => {
 
-  const data = await getData(Global)
+  const data = await getData(Summary)
   const $newCases = document.getElementById('newCases')
   const template = `
   <p><span>Confirmados:</span> ${data.confirmed.value}</p>
   <p><span>Recuperados:</span> ${data.recovered.value}</p>
   <p><span>Muertes:</span> ${data.deaths.value}</p>
   `
+  $newCases.innerHTML=""
   $newCases.insertAdjacentHTML('afterbegin', template)
   
   drawPines()
